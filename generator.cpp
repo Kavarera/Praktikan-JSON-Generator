@@ -27,15 +27,17 @@ class Items {
 public:
     int kuis = 0;
     int responsi = 0;
-    int projek = 0;
+    int projek=0;
+    bool isProjek = false;
     Tugas Tugas;
     std::string toJSON() const {
         std::ostringstream json;
         json << "{"
              << "\"kuis\": " << kuis << ", "
              << "\"responsi\": " << responsi << ", "
-             << "\"tugas\": " << Tugas.toJSON()
-             << "}";
+             << "\"tugas\": " << Tugas.toJSON();
+        isProjek ? json<<", \"project\": " + std::to_string(projek) : json<<"";
+    json << "}";
         return json.str();
     }
 };
@@ -118,6 +120,12 @@ std::vector<Praktikan> setupProgram() {
         int classAmount;
         std::cin >> classAmount;
         std::cin.ignore(1, '\n');
+
+        std::cout<<"Does this class have a project? (1: Yes, 0: No) ";
+        int isProjek;
+        std::cin >> isProjek;
+        std::cin.ignore(1, '\n');
+
         for (int i = 0; i < classAmount; i++) {
             std::cout << "Please input the class code you teach in " << fileNameWithoutExtension << ": (Example: IF-A) ";
             std::cin >> classIF;
@@ -176,6 +184,7 @@ std::vector<Praktikan> setupProgram() {
                                 kelas.kode = dataArray[1];
                                 kelas.logo = logo;
                                 kelas.nama = NamaForClass;
+                                kelas.Items.isProjek = isProjek;
                                 praktikan.Kelas.push_back(kelas);
                                 listPraktikan.push_back(praktikan);
                                 lineDataIndex = 0;
@@ -213,12 +222,12 @@ void generateJson(const std::vector<Praktikan>& datas, std::atomic<bool>& status
 
     // GENERATE THE JSON
     std::ostringstream jsonOutput;
-    jsonOutput << "{";
+    jsonOutput << "{\"users\":{";
     for (size_t i = 0; i < filteredDatas.size(); ++i) {
         jsonOutput << filteredDatas[i].toJSON();
         if (i < filteredDatas.size() - 1) jsonOutput << ", ";
     }
-    jsonOutput << "}";
+    jsonOutput << "}}";
 
     // Write the JSON output to a file
     std::ofstream outputFile("output.json");
@@ -245,8 +254,9 @@ void LOADING(std::atomic<bool>& status) {
 
     while (status) {
         std::cout << "\r" << loadingStates[state] << std::flush;
-        state = (state + 1) % numStates;
-        std::this_thread::sleep_for(std::chrono::milliseconds(200)); // Adjust the delay as needed
+        state++;
+        if(state == numStates) state = 0;
+        std::this_thread::sleep_for(std::chrono::milliseconds(200));
     }
     std::cout << "\rGenerating JSON \t\t Done!" << std::endl;
 }
@@ -259,8 +269,6 @@ int main() {
     for (auto& data : datas) {
         data.Kelas[0].Items.kuis = 0;
         data.Kelas[0].Items.responsi = 0;
-        data.Kelas[0].Items.Tugas.listTugas.push_back(0);
-        data.Kelas[0].Items.Tugas.listTugas.push_back(0);
         data.Kelas[0].Items.Tugas.listTugas.push_back(0);
     }
 
