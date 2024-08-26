@@ -64,7 +64,7 @@ This project is a C++ command-line application designed to generate JSON data fo
     - Verify the output.json file and upload it to Firebase.![Run Image](images/run5.png)
 6. **Upload to Firebase**
     
-    Go to [LabLog Firebase](console.firebase.google.com/u/0/project/lablog-d9430/database/lablog-d9430-default-rtdb/data/~2Fusers).
+    Go to [LabLog Firebase](https://console.firebase.google.com/u/0/project/lablog-d9430/database/lablog-d9430-default-rtdb/data/~2Fusers).
 
     Click the more options icon and select "Import JSON." ![Firebase Image](images/firebase1.png)
 
@@ -73,7 +73,7 @@ This project is a C++ command-line application designed to generate JSON data fo
 
 ## Access
 
-To gain access to the system or Firebase, please contact [Me](www.instagram.com/r_kavarera).
+To gain access to the system or Firebase, please contact [Me](https://www.instagram.com/r_kavarera).
 
 
 ## Future update
