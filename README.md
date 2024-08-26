@@ -73,7 +73,7 @@ This project is a C++ command-line application designed to generate JSON data fo
 
 ## Access
 
-To gain access to the system or Firebase, please contact [Me](www.instagram.com/r_kavarera).
+To gain access to the system or Firebase, please contact [Me](https://www.instagram.com/r_kavarera).
 
 
 ## Future update
