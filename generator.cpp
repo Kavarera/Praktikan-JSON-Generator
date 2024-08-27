@@ -271,8 +271,6 @@ int main() {
 
     // SETUP DATAS TO DEFAULT VALUE
     for (auto& data : datas) {
-        data.Kelas[0].Items.kuis = 0;
-        data.Kelas[0].Items.responsi = 0;
         data.Kelas[0].Items.Tugas.listTugas.push_back(0);
     }
 

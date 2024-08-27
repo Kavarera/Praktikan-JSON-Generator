@@ -10,7 +10,7 @@ This project is a C++ command-line application designed to generate JSON data fo
 
 ## Requirements
 
-- C++11 or later
+- C++17 or later
 - Standard C++ libraries
 
 ## Usage
@@ -27,7 +27,7 @@ This project is a C++ command-line application designed to generate JSON data fo
 
     Compile the source code (generator.cpp) into an executable file:
     ```sh 
-    g++ -std=c++11 -o generator generator.cpp
+    g++ -std=c++17 -o generator generator.cpp
     ```
 
 
@@ -78,7 +78,7 @@ To gain access to the system or Firebase, please contact [Me](https://www.instag
 
 ## Future update
 
-Future updates will include the option to add Final Project data.
+Future updates assessment for assignments, quizzes, and practicals will be added.
 
 ### Contribute
 
