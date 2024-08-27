@@ -7,6 +7,9 @@
 # Ignore json files
 *.json
 
+# Ignore all exe file
+*.exe
+
 # Ignore .env files
 .env
 

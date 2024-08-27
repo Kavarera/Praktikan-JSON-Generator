@@ -95,6 +95,117 @@ public:
     }
 };
 
+
+std::vector<Praktikan> optimizedSetupProgram(){
+    std::string directoryPath = std::filesystem::current_path().string();
+    std::vector<std::string> csvFiles;
+    std::vector<Praktikan> listPraktikan;
+    // Baca semua file .csv di dalam directory
+    for (const auto& entry : std::filesystem::directory_iterator(directoryPath)) {
+        if (entry.path().extension() == ".csv") {
+            csvFiles.push_back(entry.path().string());
+        }
+    }
+    std::cout << "Number of CSV files: " << csvFiles.size() << std::endl;
+    for (const auto& csvFile : csvFiles) {
+        // Print the file name
+        std::string fileName = csvFile.substr(csvFile.find_last_of('-') + 1);
+        std::string fileNameWithoutExtension = fileName.substr(0, fileName.find('.'));
+        std::cout << "Set Configuration for File : " << fileNameWithoutExtension << std::endl;
+
+        std::cout << "Please input how many classes you teach in " << fileNameWithoutExtension << ": ";
+        int classAmount;
+        std::cin >> classAmount;
+        std::cin.ignore(1, '\n');
+
+        std::cout<<"Does this class have a project? (1: Yes, 0: No) ";
+        int isProjek;
+        std::cin >> isProjek;
+        std::cin.ignore(1, '\n');
+        std::vector<std::string> _listClass;
+        for (int i = 0; i < classAmount; i++) {
+            std::cout << "Please input the class code you teach in " << fileNameWithoutExtension << ": (Example: IF-A) ";
+            std::string _classIF; std::cin >> _classIF;
+            std::cin.ignore(1, '\n');
+            _listClass.push_back(_classIF);
+        }
+
+        std::cout << R"(
+                            1: 'DataScience'
+                            2: 'DataBase'
+                            3: 'IoT'
+                            4: 'Networking'
+                            5: 'Mobile Programming'
+                            6: 'SCPK or DataScience'
+                            7: 'Web Programming'
+                            8: 'Algorithm or OOP (DEFAULT)'
+                            9: 'Cloud Computing ')";
+        std::cout << "\nPlease input the logo for class " << fileNameWithoutExtension << ": ";
+        int logo;
+        try{
+            std::cin >> logo;
+            std::cin.ignore(1, '\n');
+            if (logo == 0) {
+                logo = 8;
+            }
+        } catch (std::exception& e){
+            std::cout<<"Input logo Error: "<<e.what()<<std::endl;
+            std::cout<<"Setting logo to default value 8"<<std::endl;
+            logo = 8;
+        }
+
+        std::string NamaForClass;
+        std::cout << "Please input the name for class " << fileNameWithoutExtension << ": ";
+        std::getline(std::cin, NamaForClass);
+
+        // Read from the CSV file inserting to vector line by line
+        std::ifstream file(csvFile);
+        std::string line;
+        std::vector<std::string> _listLine;
+
+        while (std::getline(file, line)) {
+            _listLine.push_back(line);
+        }
+        file.close();
+        for(std::string _line :_listLine){
+            std::string lastCell = _line.substr(_line.find_last_of(',') + 1);
+            // Split the line into a string array
+                std::vector<std::string> _dataArray;
+                std::string token;
+                std::istringstream tokenStream(_line);
+                int lineDataIndex = 0;
+                while(std::getline(tokenStream, token, ',')){
+                    if (lineDataIndex == 0) {
+                        lineDataIndex++;
+                        continue;
+                    } else {
+                        _dataArray.push_back(token);
+                        lineDataIndex++;
+                        if (lineDataIndex >= 3 ) {
+                            for(std::string _class:_listClass){
+                                if(_class == lastCell){
+                                    Praktikan praktikan;
+                                    praktikan.nim = _dataArray[0];
+                                    Kelas kelas;
+                                    kelas.kode = _dataArray[1];
+                                    kelas.logo = logo;
+                                    kelas.nama = NamaForClass;
+                                    kelas.Items.isProjek = isProjek;
+                                    praktikan.Kelas.push_back(kelas);
+                                    listPraktikan.push_back(praktikan);
+                                }
+                            }
+                            lineDataIndex = 0;
+                        }
+                    }
+                }
+        }     
+
+    }
+    return listPraktikan;
+
+}
+
 std::vector<Praktikan> setupProgram() {
     std::string directoryPath = std::filesystem::current_path().string();
     std::vector<std::string> csvFiles;
@@ -157,13 +268,13 @@ std::vector<Praktikan> setupProgram() {
         // Read from the CSV file
         std::ifstream file(csvFile);
         std::string line;
-
-        for (const std::string& cIF : listClass) {
+        std::cout<<listClass.size()<<std::endl;
+        for (std::string cIF : listClass) {
             std::cout << "classIF = " << cIF << std::endl;
-
             while (std::getline(file, line)) {
                 std::string lastCell = line.substr(line.find_last_of(',') + 1);
                 if (lastCell == cIF) {
+                    std::cout<<"Kelas Sesuai "<<lastCell<<"---"<<cIF<<std::endl;
                     // Split the line into a string array
                     std::vector<std::string> dataArray;
                     std::string token;
@@ -177,7 +288,7 @@ std::vector<Praktikan> setupProgram() {
                         } else {
                             dataArray.push_back(token);
                             lineDataIndex++;
-                            if (lineDataIndex == 3) {
+                            if (lineDataIndex >= 3) {
                                 Praktikan praktikan;
                                 praktikan.nim = dataArray[0];
                                 Kelas kelas;
@@ -193,12 +304,15 @@ std::vector<Praktikan> setupProgram() {
                     }
                 }
             }
+            file.clear();
+        file.seekg(0, std::ios::beg);
+            
         }
 
         file.close();
         indexFile++;
     }
-
+    std::cout << "listPraktikan = " << listPraktikan.size() << std::endl;
     return listPraktikan;
 }
 
@@ -262,7 +376,7 @@ void LOADING(std::atomic<bool>& status) {
 }
 
 int main() {
-    std::vector<Praktikan> datas = setupProgram();
+    std::vector<Praktikan> datas = optimizedSetupProgram();
     std::cout << "datas = " << datas.size() << std::endl;
 
     // SETUP DATAS TO DEFAULT VALUE
